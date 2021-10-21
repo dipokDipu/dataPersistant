@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
-    public int LineCount = 6;
+    public int LineCount,perLine;
     public Rigidbody Ball;
 
     public Text ScoreText , highestScoreText;
@@ -22,20 +22,33 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        LineCount = Mathf.Clamp(MenuDataPersistence.instance.rowNo,2,5);
+        perLine = Mathf.Clamp(MenuDataPersistence.instance.coloumNo,2,5);
+        //Debug.Log(LineCount+ ": "+ perLine);
         highestScoreText.text = $"Score : {MenuDataPersistence.instance.playerName} : {MainDataPersistence.instance.highScore}";
-        const float step = 0.6f;
-        int perLine = Mathf.FloorToInt(4.0f / step);
+        //const float step = 0.6f;
+        //int perLine = Mathf.FloorToInt(4.0f / step);
         
         int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        float y = 3.55f/(perLine-1);
+
+        //Debug.Log(y+""+ Screen.width);
+
         for (int i = 0; i < LineCount; ++i)
         {
-            for (int x = 0; x < perLine; ++x)
+            float valueOfX = -1.85f;
+            for (int x = 0; x < perLine; x++)
             {
-                Vector3 position = new Vector3(-1.5f + step * x, 2.5f + i * 0.3f, 0);
+                
+                Vector3 position = new Vector3( valueOfX + x*y , 2.5f + i * 0.3f, 0);
+
+                //Vector3 position = new Vector3(-1.5f + step * x, 2.5f + i * 0.3f, 0);
                 var brick = Instantiate(BrickPrefab, position, Quaternion.identity);
+                Debug.Log("hello "+position.x);
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
+                valueOfX = -1.55f;
             }
         }
     }
@@ -82,6 +95,6 @@ public class MainManager : MonoBehaviour
             MenuDataPersistence.instance.playerName = MenuDataPersistence.instance.currentPlayer;
             MenuDataPersistence.instance.SaveName();
         }
-        
+        MenuDataPersistence.instance.SaveTiles();
     }
 }

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class MenuUI : MonoBehaviour
 {
 
+    public GameObject settings;
     private void Awake()
     {
         if(MenuDataPersistence.instance.playerName!= null)
@@ -46,4 +47,18 @@ public class MenuUI : MonoBehaviour
         Application.Quit();
 #endif
     }
+
+    public void SaveSettings(Button button)
+    {
+        MenuDataPersistence.instance.rowNo =  int.Parse(GameObject.FindGameObjectWithTag("Row").GetComponent<InputField>().text);
+        MenuDataPersistence.instance.coloumNo = int.Parse(GameObject.FindGameObjectWithTag("Coloum").GetComponent<InputField>().text);
+        button.gameObject.transform.parent.gameObject.SetActive(false);
+    }
+    public void OnMouseDown()
+    {
+        Debug.Log("entered");
+        settings.SetActive(true);
+    }
+
+
 }

@@ -10,6 +10,9 @@ public class MenuDataPersistence : MonoBehaviour
     public static MenuDataPersistence instance;
     public string playerName, currentPlayer;
     public int highPoint;
+
+    public int rowNo, coloumNo;
+
     private void Awake()
     {
         if (instance != null)
@@ -29,6 +32,7 @@ public class MenuDataPersistence : MonoBehaviour
     {
         public string player;
         public int hScore;
+        public int row, col;
     }
 
     public void SaveName()
@@ -36,11 +40,20 @@ public class MenuDataPersistence : MonoBehaviour
         PlayerName data = new PlayerName();
         data.player = playerName;
         data.hScore = MainDataPersistence.instance.highScore;
-
-        Debug.Log(data.hScore);
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void SaveTiles()
+    {
+        PlayerName data1 = new PlayerName();
+        data1.row = rowNo;
+        data1.col = coloumNo;
+
+        string json1 = JsonUtility.ToJson(data1);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json1", json1);
     }
 
     public void LoadName()
@@ -53,6 +66,19 @@ public class MenuDataPersistence : MonoBehaviour
 
             playerName = data.player;
             highPoint = data.hScore;
+
+        }
+
+        string path2 = Application.persistentDataPath + "/savefile.json1";
+        if (File.Exists(path2))
+        {
+            string json = File.ReadAllText(path2);
+            PlayerName data = JsonUtility.FromJson<PlayerName>(json);
+
+            rowNo = data.row;
+            coloumNo = data.col;
         }
     }
+
+
 }
